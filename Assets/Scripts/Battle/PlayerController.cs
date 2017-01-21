@@ -188,7 +188,6 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateDirection(float XAxis, float YAxis) {
         float angleFix =  (Mathf.RoundToInt(Mathf.Atan2(XAxis, YAxis) * Mathf.Rad2Deg) + 360) % 360;
-        Debug.Log(angleFix);
         if(angleFix >= 0 && angleFix < 90) {
             Direction = Directions.Up;
         }
