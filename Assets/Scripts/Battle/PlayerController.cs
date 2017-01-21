@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 revivePoint = new Vector3();
     public AnimatorOverrideController Avatar;
+    public AnimatorOverrideController[] Avatars;
     public AudioClip AttackSFX;
     public AudioClip ChargeSFX;
 
@@ -120,12 +121,22 @@ public class PlayerController : MonoBehaviour
         playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.color = color;
         playerAnimator = playerSpriteTransform.GetComponent<Animator>();
+        RandomAvatar();
         if(Avatar) {
             playerAnimator.runtimeAnimatorController = Avatar;
         }
         shieldSprite.enabled = false;
         alive = true;
         shielded = false;
+    }
+
+    void RandomAvatar() {
+        Random.InitState(System.DateTime.UtcNow.Millisecond);
+        int AvatarID = Random.Range(0, 3);
+        if(AvatarID == 0) {
+            return;
+        }
+        Avatar = Avatars[AvatarID - 1];
     }
 
     // Update is called once per frame
