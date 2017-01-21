@@ -11,11 +11,11 @@ public class MapBlock : MonoBehaviour {
 	};
 
 	public enum BlockType {
-		Normal, Block, Edeg
+		Normal, Block, Edge
 	};
 	public BlockSkin Skin = BlockSkin.Grass;
 	public int SkinType = 1;
-	public BlockType Type = BlockType.Normal;
+	public BlockType Type = BlockType.Normal;	
 
 	void Awake() {
 		SetupSkin();
@@ -37,13 +37,11 @@ public class MapBlock : MonoBehaviour {
 	void SetupCollision() {
 		GetComponent<BoxCollider2D>().enabled = true;
 		switch(Type) {
-			case BlockType.Normal:
-			GetComponent<BoxCollider2D>().enabled = false;
-			break;
 			case BlockType.Block:
 			GetComponent<BoxCollider2D>().isTrigger = false;
 			break;
-			case BlockType.Edeg:
+			case BlockType.Edge:
+			case BlockType.Normal:
 			GetComponent<BoxCollider2D>().isTrigger = true;
 			break;
 		}
@@ -58,5 +56,4 @@ public class MapBlock : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		// TODO: Kill player
 	}
-
 }
