@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
     }
 
     void RandomAvatar() {
-        Random.InitState(System.DateTime.UtcNow.Millisecond);
+        Random.InitState(System.DateTime.UtcNow.Millisecond + Random.Range(1, 5));
         int AvatarID = Random.Range(0, 3);
         if(AvatarID == 0) {
             return;
