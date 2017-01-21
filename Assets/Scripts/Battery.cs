@@ -12,7 +12,7 @@ public class Battery : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		SetupSkin();
 	}
 	void OnValidate() {
 		SetupSkin();
@@ -28,7 +28,7 @@ public class Battery : MonoBehaviour {
 		return Resources.Load<Sprite>(ResourceName);
 	}
 
-	void OnTriggerEnter2D() {
+	void OnTriggerEnter2D(Collider2D other) {
 		Destroy(gameObject);
 		// TODO: Call player charge API
 	}
