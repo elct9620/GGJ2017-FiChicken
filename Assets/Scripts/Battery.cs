@@ -24,7 +24,8 @@ public class Battery : MonoBehaviour {
 
 	Sprite GetSprite() {
 		// Resource searched by name
-		string ResourceName = string.Format("Sprites/Item/{0}", Skin.ToString("G"));
+		bool isBig = Power >= 3;
+		string ResourceName = string.Format("Sprites/Item/{0}_{1}", Skin.ToString("G"), (isBig ? 1 : 2));
 		return Resources.Load<Sprite>(ResourceName);
 	}
 
