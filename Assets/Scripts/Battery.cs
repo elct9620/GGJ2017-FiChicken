@@ -30,8 +30,11 @@ public class Battery : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		Destroy(gameObject);
-		// TODO: Call player charge API
+		PlayerController Controller = other.GetComponent<PlayerController>();
+		if(Controller) {
+			Controller.RecoverEnergy(Power);
+			Destroy(gameObject);
+		}
 	}
 
 }

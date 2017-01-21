@@ -10,13 +10,17 @@ public class PowerStation : MonoBehaviour {
 		PowerStation
 	}
 	public int Power = 5;
+
 	public int Range = 1; // One Block
 	public float ChargeSpeed = 1.5f;
 	public SkinType Skin = SkinType.PowerStation;
 
+	int ChargeAmount = 1;
+
 	List<PlayerController> Players = new List<PlayerController>();
 
 	void Start () {
+		ChargeAmount = Mathf.RoundToInt(Power / 5);
 		SetupSkin();
 		GetComponent<CircleCollider2D>().radius = Range * 0.32f;
 		Observable.Interval(System.TimeSpan.FromMilliseconds(ChargeSpeed * 1000))
@@ -42,7 +46,8 @@ public class PowerStation : MonoBehaviour {
 	void DoCharge() {
 		foreach(PlayerController Controller in Players) {
 			// TODO: Perform charge player
-			Power--;
+			Controller.RecoverEnergy(ChargeAmount);
+			Power -= ChargeAmount;
 			DestroyOnOutOfPower();
 		}
 	}

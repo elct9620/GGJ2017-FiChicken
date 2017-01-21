@@ -6,12 +6,18 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+
+    public enum Directions {
+        Up, Right, Down, Left
+    };
+
     //[SerializeField]
     Rigidbody2D playerRigidBody;
     Collider2D playerCollider;
     [SerializeField]
     Transform playerSpriteTransform;
     SpriteRenderer playerSpriteRenderer;
+    Animator playerAnimator;
     [SerializeField]
     SpriteRenderer shieldSprite;
     [SerializeField]
@@ -49,9 +55,8 @@ public class PlayerController : MonoBehaviour
 
     public Color color = Color.white;
 
-
     public Vector3 revivePoint = new Vector3();
-
+    public AnimatorOverrideController Avatar;
 
     public Image chargeRing;
     public Image energyRing;
@@ -71,8 +76,8 @@ public class PlayerController : MonoBehaviour
     float chargeAmount = 0;
     float energy = 0;
 
-
     float facingDirectionAngle = 180;
+    Directions Direction = Directions.Right;
 
     List<MapBlock> touchedMapblocks = new List<MapBlock>();
 
@@ -110,6 +115,10 @@ public class PlayerController : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
         playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.color = color;
+        playerAnimator = playerSpriteTransform.GetComponent<Animator>();
+        if(Avatar) {
+            playerAnimator.runtimeAnimatorController = Avatar;
+        }
         shieldSprite.enabled = false;
         alive = true;
         shielded = false;
@@ -173,7 +182,28 @@ public class PlayerController : MonoBehaviour
         if (XAxis != 0 || YAxis != 0)
         {
             facingDirectionAngle = Mathf.MoveTowardsAngle(facingDirectionAngle, Mathf.Atan2(YAxis, XAxis) * Mathf.Rad2Deg, rotateSpeed * Time.deltaTime); //;
+            UpdateDirection(XAxis, YAxis);
         }
+    }
+
+    private void UpdateDirection(float XAxis, float YAxis) {
+        float angleFix =  (Mathf.RoundToInt(Mathf.Atan2(XAxis, YAxis) * Mathf.Rad2Deg) + 360) % 360;
+        if(angleFix >= 0 && angleFix < 90) {
+            Direction = Directions.Up;
+        }
+
+        if(angleFix >= 90 && angleFix < 180) {
+            Direction = Directions.Right;
+        }
+
+        if(angleFix >= 180 && angleFix < 270) {
+            Direction = Directions.Down;
+        }
+
+        if(angleFix >= 270 && angleFix < 360) {
+            Direction = Directions.Left;
+        }
+        playerAnimator.SetInteger("Direction", (int)Direction);
     }
 
     private void JumpControl()
@@ -228,9 +258,11 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Shield()
     {
+        playerAnimator.SetBool("Sit", true);
         shieldSprite.enabled = true;
         shielded = true;
         yield return new WaitForSeconds(shieldTime);
+        playerAnimator.SetBool("Sit", false);
         shieldSprite.enabled = false;
         shielded = false;
     }
