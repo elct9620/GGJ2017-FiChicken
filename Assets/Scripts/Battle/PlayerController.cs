@@ -341,7 +341,8 @@ public class PlayerController : MonoBehaviour
             if (chargeAmount == 0)
             {
                 chargeAmount = chargeInitAmount;
-                SFX.PlayOneShot(ChargeSFX);
+                SFX.clip = ChargeSFX;
+                SFX.Play();
             }
             else
             {
@@ -352,9 +353,10 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            StopSound();
+
             if (chargeAmount != 0)
             {
+                SFX.Stop();
                 GameObject shootedWave = GameObject.Instantiate(waveObject);
                 shootedWave.transform.position = transform.position;
                 shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, chargeAmount, this, 1);
@@ -365,11 +367,7 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-
-    IEnumerator StopSound() {
-        yield return new WaitForSeconds(0.1f);
-        SFX.Stop();
-    }
+    
 
     private void UIControl()
     {
