@@ -1,0 +1,72 @@
+====================================================
+BGM
+
+ Title
+  01 - µü???ÃÙ¬üºq _ http://dova-s.jp/bgm/play704.html
+  02 - Rubix Cube _ from Youtube
+
+ Select
+  01 - With shot and shell _from Youtube
+
+ Battle
+  01 - bgm maoudamashii 8bit 19 _from http://maoudamashii.jokersounds.com/
+  02 - bgm maoudamashii 8bit 24 _from http://maoudamashii.jokersounds.com/
+  03 - game maoudamashii 1 battle03 _from http://maoudamashii.jokersounds.com/
+  04 - game maoudamashii 1 battle09 _from http://maoudamashii.jokersounds.com/
+  05 - game maoudamashii 1 battle24 _from http://maoudamashii.jokersounds.com/
+
+
+ Result
+  01 - Chripei victory cry rever2 _from freesound_165491
+  02 - Teammasaka team masaka frog _from freesound_197428
+  03 - Limetoe badass victory _from freesound_249524
+
+========================================================================
+SFX
+------------------------------------------------------------------------
+ 02 - Corsica-s 4 _from freesound_34553
+ 09 - timbre louder charging variants of 171595 _from freesound_328827
+------------------------------------------------------------------------
+ Attack
+  01 - Jnr hacksaw spring drip hit _from freesound_11222
+  02 - djgriddin bass d_from freesound_21582
+  03 - noizmassacre harcore bass 1 _from freesound_69988
+  04 - zgump bass0101 _from freesound_75228
+  05 - zgump bass0203 _from freesound_83247
+  06 - zgump bass rvb 4 _from freesound_87238
+  07 - bigfriendlyjiant bass 01 _from freesound_183898
+------------------------------------------------------------------------
+ Chicken
+  01 - rudmer rotteveel chicken single alarm call _from freesound_316920
+
+------------------------------------------------------------------------
+ Charge
+  01 - timbre weird riffle _from freesound_106595
+  02 - josepharaoh99 game powerup _from freesound 368651
+
+------------------------------------------------------------------------
+ Death
+  01 - magedu bicycle bell 05 _from freesound_328827
+
+------------------------------------------------------------------------
+ Defence
+  01 - jobro 3 beep a_from free sound_33781
+  02 - greencouch beeps 16 _from freesound_124897
+------------------------------------------------------------------------
+ Enter
+  01 - se maoudamashii onepoint12
+  02 - se maoudamashii onepoint30
+  03 - se dynajinn fight voiceover fight _from freesound_276254
+------------------------------------------------------------------------
+ Item
+  01 - timgormly 8bit powerup2 _from freesound_170156
+  02 - cman634 jump sound or power up sound _from freesound_198784
+  03 - gameaudio spacey 1up power up _from freesound_220173
+
+------------------------------------------------------------------------
+ Pick
+  01 - willybilly1984 rfx lock and unlock doors_from freesound_345339
+------------------------------------------------------------------------
+ Select
+  01 - philip danniels knock on door _from freesound_244325
+------------------------------------------------------------------------
