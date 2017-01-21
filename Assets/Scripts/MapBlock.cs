@@ -8,7 +8,7 @@ using UniRx.Triggers;
 public class MapBlock : MonoBehaviour {
 
 	public enum BlockSkin {
-		Grass, Stone
+		Grass, Stone, Wood, Nest, Border
 	};
 
 	public enum BlockType {
@@ -17,6 +17,7 @@ public class MapBlock : MonoBehaviour {
 	const float MAP_WIDTH = 0.64f;
 	const float MAP_HEIGHT = 0.64f;
 	public BlockSkin Skin = BlockSkin.Grass;
+	public int SkinType = 1;
 	public BlockType Type = BlockType.Normal;
 
 	void Awake() {
@@ -70,7 +71,7 @@ public class MapBlock : MonoBehaviour {
 
 	Sprite GetSprite() {
 		// Resource searched by name
-		string ResourceName = string.Format("Sprites/Map/Block/{0}", Skin.ToString("G"));
+		string ResourceName = string.Format("Sprites/Map/Block/{0}_{1}", Skin.ToString("G"), SkinType);
 		return Resources.Load<Sprite>(ResourceName);
 	}
 
