@@ -6,8 +6,8 @@ using UnityEngine;
 public class SnapToMap : MonoBehaviour {
 
 	
-	const float MAP_WIDTH = 0.64f;
-	const float MAP_HEIGHT = 0.64f;
+	public const float MAP_WIDTH = 0.64f;
+	public const float MAP_HEIGHT = 0.64f;
 	
 	// Update is called once per frame
 	void Update () {
