@@ -14,6 +14,11 @@ public class ItemSpawner : MonoBehaviour {
 
 	public int MIN_BATTERY = 3;
 	public int MIN_POWER_STATION = 2;
+
+	public int BATTERY_MIN_POWER = 1;
+	public int BATTERY_MAX_POWER = 5;
+	public int STATION_MIN_POWER = 5;
+	public int STATION_MAX_POWER = 25;
 	public float SpawnSpeed = 1.5f;
 	public GameObject BatteryPrefab;
 	public GameObject PowerStationPrefab;
@@ -43,12 +48,20 @@ public class ItemSpawner : MonoBehaviour {
 		LoadItemPosition(PowerStations);
 		LoadItemPosition(Players);
 
+		Random.InitState(Time.frameCount);
+
 		if(Batteries.Length < MIN_BATTERY) {
-			SpawnItem(BatteryPrefab);
+			Battery New = SpawnItem(BatteryPrefab).GetComponent<Battery>();
+			if(New) {
+				New.Power = Random.Range(BATTERY_MIN_POWER, BATTERY_MAX_POWER);
+			}
 		}
 
 		if(PowerStations.Length < MIN_POWER_STATION) {
-			SpawnItem(PowerStationPrefab);
+			PowerStation New = SpawnItem(PowerStationPrefab).GetComponent<PowerStation>();
+			if(New) {
+				New.Power = Random.Range(STATION_MIN_POWER, STATION_MAX_POWER);
+			}
 		}
 	}
 
@@ -75,23 +88,21 @@ public class ItemSpawner : MonoBehaviour {
 		 );
 	}
 
-	void SpawnItem(GameObject Prefab) {
+	GameObject SpawnItem(GameObject Prefab) {
 		Vector2 Position = PickPosition();
 		if(Position == EdgePosition) {
-			SpawnItem(Prefab);
-			return;
+			return SpawnItem(Prefab);
 		}
 		foreach(Vector2 ExistsPosition in HasItemBlocks) {
 			if(ExistsPosition == Position) {
-				SpawnItem(Prefab);
-				return;
+				return SpawnItem(Prefab);
 			}
 		}
-		CreateAt(Prefab, Position);
+		return CreateAt(Prefab, Position);
 	}
 
-	void CreateAt(GameObject Prefab, Vector2 Position) {
-		Instantiate(
+	GameObject CreateAt(GameObject Prefab, Vector2 Position) {
+		return Instantiate(
 			Prefab,
 			new Vector3(
 				Position.x * SnapToMap.MAP_WIDTH,
