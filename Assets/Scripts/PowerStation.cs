@@ -18,6 +18,7 @@ public class PowerStation : MonoBehaviour {
 
 	void Start () {
 		SetupSkin();
+		GetComponent<CircleCollider2D>().radius = Range * 0.32f;
 		Observable.Interval(System.TimeSpan.FromMilliseconds(ChargeSpeed * 1000))
 				  .Subscribe( _ => { DoCharge(); })
 				  .AddTo(this);
