@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class Battery : MonoBehaviour {
 
@@ -9,10 +10,14 @@ public class Battery : MonoBehaviour {
 	}
 	public int Power = 1;
 	public SkinType Skin = SkinType.Battery;
+	public AudioClip PickSound;
+
+	AudioSource SFX;
 
 	// Use this for initialization
 	void Start () {
 		SetupSkin();
+		SFX = GetComponent<AudioSource>();
 	}
 	void OnValidate() {
 		SetupSkin();
@@ -33,7 +38,13 @@ public class Battery : MonoBehaviour {
 		PlayerController Controller = other.GetComponent<PlayerController>();
 		if(Controller) {
 			Controller.RecoverEnergy(Power);
-			Destroy(gameObject);
+			SFX.PlayOneShot(PickSound);
+			GetComponent<SpriteRenderer>().enabled = false;
+			GetComponent<BoxCollider2D>().enabled = false;
+			Observable.Timer(System.TimeSpan.FromMilliseconds(500))
+					  .Subscribe( _ => {
+						  Destroy(gameObject);
+					  }).AddTo(this);
 		}
 	}
 

@@ -14,13 +14,15 @@ public class PowerStation : MonoBehaviour {
 	public int Range = 1; // One Block
 	public float ChargeSpeed = 1.5f;
 	public SkinType Skin = SkinType.PowerStation;
+	public AudioClip ChargeSound;
 
 	int ChargeAmount = 1;
-
+	AudioSource SFX;
 	List<PlayerController> Players = new List<PlayerController>();
 
 	void Start () {
 		ChargeAmount = Mathf.RoundToInt(Power / 5);
+		SFX = GetComponent<AudioSource>();
 		SetupSkin();
 		GetComponent<CircleCollider2D>().radius = Range * 0.32f;
 		Observable.Interval(System.TimeSpan.FromMilliseconds(ChargeSpeed * 1000))
@@ -44,6 +46,10 @@ public class PowerStation : MonoBehaviour {
 	}
 
 	void DoCharge() {
+		if(Players.Count > 0) {
+			SFX.PlayOneShot(ChargeSound);
+		}
+		
 		foreach(PlayerController Controller in Players) {
 			// TODO: Perform charge player
 			Controller.RecoverEnergy(ChargeAmount);
