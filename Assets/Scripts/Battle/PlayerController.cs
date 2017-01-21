@@ -57,6 +57,8 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 revivePoint = new Vector3();
     public AnimatorOverrideController Avatar;
+    public AudioClip AttackSFX;
+    public AudioClip ChargeSFX;
 
     public Image chargeRing;
     public Image energyRing;
@@ -83,6 +85,7 @@ public class PlayerController : MonoBehaviour
 
     bool triggerStayExcuted = false;
 
+    AudioSource SFX;
     void FixedUpdate()
     {
         onGround = OnGround();
@@ -111,6 +114,7 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        SFX = GetComponent<AudioSource>();
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
@@ -326,6 +330,7 @@ public class PlayerController : MonoBehaviour
             if (chargeAmount == 0)
             {
                 chargeAmount = chargeInitAmount;
+                SFX.PlayOneShot(ChargeSFX);
             }
             else
             {
@@ -336,17 +341,24 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            StopSound();
             if (chargeAmount != 0)
             {
                 GameObject shootedWave = GameObject.Instantiate(waveObject);
                 shootedWave.transform.position = transform.position;
                 shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, chargeAmount, this, 1);
+                SFX.PlayOneShot(AttackSFX);
                 energy -= chargeAmount * 0.25f;
             }
             chargeAmount = 0;
+
         }
     }
 
+    IEnumerator StopSound() {
+        yield return new WaitForSeconds(0.1f);
+        SFX.Stop();
+    }
 
     private void UIControl()
     {
