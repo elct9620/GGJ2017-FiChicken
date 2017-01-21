@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
     public Color color = Color.white;
 
-    
+
     public Vector3 revivePoint = new Vector3();
 
 
@@ -74,6 +74,34 @@ public class PlayerController : MonoBehaviour
 
     float facingDirectionAngle = 180;
 
+    List<MapBlock> touchedMapblocks = new List<MapBlock>();
+
+    bool triggerStayExcuted = false;
+
+    void FixedUpdate()
+    {
+        onGround = OnGround();
+        triggerStayExcuted = false;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        var mapBlock = other.GetComponent<MapBlock>();
+        if (mapBlock != null)
+        {
+            touchedMapblocks.Add(mapBlock);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        var mapBlock = other.GetComponent<MapBlock>();
+        if (mapBlock != null)
+        {
+            touchedMapblocks.Remove(mapBlock);
+        }
+    }
+
 
     // Use this for initialization
     void Start()
@@ -91,7 +119,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        onGround = OnGround();
+
 
         if (isInvincible)
         {
@@ -114,14 +142,26 @@ public class PlayerController : MonoBehaviour
         //Input.GetKey(KeyCode.LeftArrow)
     }
 
+
     bool OnGround()
     {
+        /*
         bool ret = true;
         if (!field.fieldCollider.IsTouching(playerCollider))
         {
             return false;
         }
-        return ret;
+        */
+
+        if (touchedMapblocks.Count == 0) { return false; }
+        foreach (var block in touchedMapblocks)
+        {
+            if (block.Type == MapBlock.BlockType.Normal)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void MoveControl()
@@ -150,7 +190,8 @@ public class PlayerController : MonoBehaviour
         //計算重力與跳躍
         playerHeight += jumpVelocity * Time.deltaTime;
         jumpVelocity -= gravity * Time.deltaTime;
-        if (playerHeight < 0) {
+        if (playerHeight < 0)
+        {
             if (onGround || isInvincible)
             {
                 playerHeight = 0;
@@ -160,7 +201,7 @@ public class PlayerController : MonoBehaviour
                 Die();
                 return;
             }
-            
+
         }
         //更新圖片位置
         var newPosition = playerSpriteTransform.localPosition;
@@ -170,9 +211,9 @@ public class PlayerController : MonoBehaviour
 
     void ShieldControl()
     {
-        if(Input.GetButtonDown(controlTag + "_Shield"))
+        if (Input.GetButtonDown(controlTag + "_Shield"))
         {
-            if(energy > shieldCostEnergy)
+            if (energy > shieldCostEnergy)
             {
                 EnableShield();
             }
@@ -203,10 +244,10 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator DieCoroutine()
     {
-        for(float timer = 1; timer > 0;timer -= Time.deltaTime)
+        for (float timer = 1; timer > 0; timer -= Time.deltaTime)
         {
             yield return null;
-            playerSpriteTransform.localScale = new Vector3(timer,timer,1);
+            playerSpriteTransform.localScale = new Vector3(timer, timer, 1);
         }
         yield return null;
         playerSpriteTransform.localScale = Vector3.zero;
@@ -214,7 +255,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(2);
         Revive();
     }
-    
+
     void Revive()
     {
         transform.position = revivePoint;
@@ -234,8 +275,8 @@ public class PlayerController : MonoBehaviour
 
     public void RecoverEnergy(float amount)
     {
-        energy = Mathf.Clamp(energy + amount,0,energyMaxAmount);
-        
+        energy = Mathf.Clamp(energy + amount, 0, energyMaxAmount);
+
     }
 
 
@@ -244,7 +285,7 @@ public class PlayerController : MonoBehaviour
         //能量控制
 
         energy += energyRecoverSpeed * Time.deltaTime;
-        energy = Mathf.Clamp(energy,0,energyMaxAmount);
+        energy = Mathf.Clamp(energy, 0, energyMaxAmount);
 
 
         bool charging = Input.GetButton(controlTag + "_Fire");
@@ -267,7 +308,7 @@ public class PlayerController : MonoBehaviour
             {
                 GameObject shootedWave = GameObject.Instantiate(waveObject);
                 shootedWave.transform.position = transform.position;
-                shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, chargeAmount,this,1);
+                shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, chargeAmount, this, 1);
                 energy -= chargeAmount * 0.25f;
             }
             chargeAmount = 0;
@@ -301,7 +342,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void Push(Vector2 direction, float force , float ratio , float reflectMultiplier)
+    public void Push(Vector2 direction, float force, float ratio, float reflectMultiplier)
     {
 
         if (isInvincible) { return; }
@@ -309,6 +350,7 @@ public class PlayerController : MonoBehaviour
         {
             GameObject shootedWave = GameObject.Instantiate(waveObject);
             shootedWave.transform.position = transform.position;
+            float reflectAngle = Mathf.Atan2(direction.y, direction.x) + 180;
             shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, ratio, this, reflectMultiplier + 0.2f);
             RecoverEnergy(shieldCostEnergy);
             shielded = false;
@@ -317,6 +359,6 @@ public class PlayerController : MonoBehaviour
         if (!alive) { return; }
         if (playerHeight > evadeHeight) { return; }
         playerRigidBody.AddForce(direction.normalized * force * ratio * reflectMultiplier);
-        
+
     }
 }

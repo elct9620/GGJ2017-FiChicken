@@ -7,16 +7,19 @@ public class FieldManager : MonoBehaviour {
 
     public Collider2D fieldCollider;
     [SerializeField]
+    GameObject canvasGO;
     Canvas canvas;
     [SerializeField]
     GameObject playerPrefab;
     [SerializeField]
-    GameObject energyRing;
+    GameObject energyRingPrefab;
     [SerializeField]
-    GameObject chargeRing;
+    GameObject chargeRingPrefab;
 
 	// Use this for initialization
 	void Start () {
+        //生成Canvas
+        canvas = GameObject.Instantiate(canvasGO).GetComponent<Canvas>();
         //生成玩家
 
         GeneratePlayer("KeyPlayer",Color.cyan,"Key",new Vector3(-3.5f,2f,0));
@@ -33,9 +36,9 @@ public class FieldManager : MonoBehaviour {
         player.controlTag = playerControlTag;
         player.revivePoint = revivePoint;
         player.transform.position = player.revivePoint;
-        player.energyRing = GameObject.Instantiate(energyRing).GetComponent<Image>();
+        player.energyRing = GameObject.Instantiate(energyRingPrefab).GetComponent<Image>();
         player.energyRing.transform.SetParent(canvas.transform);
-        player.chargeRing = GameObject.Instantiate(chargeRing).GetComponent<Image>();
+        player.chargeRing = GameObject.Instantiate(chargeRingPrefab).GetComponent<Image>();
         player.chargeRing.transform.SetParent(canvas.transform);
     }
 
