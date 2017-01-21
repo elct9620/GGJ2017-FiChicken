@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using UniRx.Triggers;
 
 [ExecuteInEditMode]
 public class MapBlock : MonoBehaviour {
@@ -34,6 +35,7 @@ public class MapBlock : MonoBehaviour {
 
 	void OnValidate() {
 		SetupSkin();
+		SetupCollision();
 	}
 
 	void SetupSkin() {
@@ -41,9 +43,13 @@ public class MapBlock : MonoBehaviour {
 	}
 
 	void SetupCollision() {
+		GetComponent<BoxCollider2D>().enabled = true;
 		switch(Type) {
 			case BlockType.Normal:
 			GetComponent<BoxCollider2D>().enabled = false;
+			break;
+			case BlockType.Block:
+			GetComponent<BoxCollider2D>().isTrigger = false;
 			break;
 			case BlockType.Edeg:
 			GetComponent<BoxCollider2D>().isTrigger = true;
@@ -52,7 +58,6 @@ public class MapBlock : MonoBehaviour {
 	}
 
 	void SnapToBlock() {
-		
 		if(transform.hasChanged) {
 			Vector3 currentPos = transform.position;
 			transform.position = new Vector3(
@@ -67,6 +72,10 @@ public class MapBlock : MonoBehaviour {
 		// Resource searched by name
 		string ResourceName = string.Format("Sprites/Map/Block/{0}", Skin.ToString("G"));
 		return Resources.Load<Sprite>(ResourceName);
+	}
+
+	void OnTriggerEnter2D(Collider2D other) {
+		// TODO: Kill player
 	}
 
 }
