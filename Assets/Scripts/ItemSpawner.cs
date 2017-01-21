@@ -65,7 +65,7 @@ public class ItemSpawner : MonoBehaviour {
 		 int Index = Random.Range(0, Blocks.Length);
 		 MapBlock Block = Blocks[Index];
 
-		 if(Block.Type == MapBlock.BlockType.Edge) {
+		 if(Block.Type != MapBlock.BlockType.Normal) {
 			 return EdgePosition;
 		 }
 
@@ -78,7 +78,8 @@ public class ItemSpawner : MonoBehaviour {
 	void SpawnItem(GameObject Prefab) {
 		Vector2 Position = PickPosition();
 		if(Position == EdgePosition) {
-
+			SpawnItem(Prefab);
+			return;
 		}
 		foreach(Vector2 ExistsPosition in HasItemBlocks) {
 			if(ExistsPosition == Position) {
