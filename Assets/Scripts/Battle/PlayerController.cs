@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
     public Color color = Color.white;
 
     public Vector3 revivePoint = new Vector3();
+    public AnimatorOverrideController Avatar;
 
     public Image chargeRing;
     public Image energyRing;
@@ -115,6 +116,9 @@ public class PlayerController : MonoBehaviour
         playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
         playerSpriteRenderer.color = color;
         playerAnimator = playerSpriteTransform.GetComponent<Animator>();
+        if(Avatar) {
+            playerAnimator.runtimeAnimatorController = Avatar;
+        }
         shieldSprite.enabled = false;
         alive = true;
         shielded = false;
@@ -255,9 +259,11 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Shield()
     {
+        playerAnimator.SetBool("Sit", true);
         shieldSprite.enabled = true;
         shielded = true;
         yield return new WaitForSeconds(shieldTime);
+        playerAnimator.SetBool("Sit", false);
         shieldSprite.enabled = false;
         shielded = false;
     }
