@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Transform playerSpriteTransform;
     SpriteRenderer playerSpriteRenderer;
+    [SerializeField]
+    SpriteRenderer arrowSpriteRenderer;
     Animator playerAnimator;
     [SerializeField]
     SpriteRenderer shieldSprite;
@@ -65,6 +67,8 @@ public class PlayerController : MonoBehaviour
     public Image energyRing;
     public FieldManager field;
 
+    public Transform canvasTransform;
+
     bool alive = false;
     bool isInvincible = false;
     bool shielded = false;
@@ -85,6 +89,13 @@ public class PlayerController : MonoBehaviour
     List<MapBlock> touchedMapblocks = new List<MapBlock>();
 
     bool triggerStayExcuted = false;
+
+    PlayerController hittedBy;
+    public int killCount = 0;
+    public int killedCount = 0;
+    public int score = 0;
+
+
 
     AudioSource SFX;
     void FixedUpdate()
@@ -111,6 +122,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
+        playerAnimator = playerSpriteTransform.GetComponent<Animator>();
+    }
 
     // Use this for initialization
     void Start()
@@ -118,26 +134,36 @@ public class PlayerController : MonoBehaviour
         SFX = GetComponent<AudioSource>();
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
-        playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
-        playerSpriteRenderer.color = color;
-        playerAnimator = playerSpriteTransform.GetComponent<Animator>();
-        RandomAvatar();
-        if(Avatar) {
-            playerAnimator.runtimeAnimatorController = Avatar;
-        }
+        arrowSpriteRenderer.color = color;
         shieldSprite.enabled = false;
         alive = true;
         shielded = false;
+        StartCoroutine(Invincible());
     }
 
+    public void SetAvatar(int avatarID)
+    {
+        if (avatarID == 0)
+        {
+            return;
+        }
+        else
+        {
+            Avatar = Avatars[avatarID - 1];
+            playerAnimator.runtimeAnimatorController = Avatar;
+        }
+    }
+
+    /*
     void RandomAvatar() {
         Random.InitState(System.DateTime.UtcNow.Millisecond + Random.Range(1, 5));
-        int AvatarID = Random.Range(0, 3);
+        int AvatarID = Random.Range(0, 4);
         if(AvatarID == 0) {
             return;
         }
         Avatar = Avatars[AvatarID - 1];
     }
+    */
 
     // Update is called once per frame
     void Update()
@@ -202,8 +228,9 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateDirection(float XAxis, float YAxis) {
-        float angleFix =  (Mathf.RoundToInt(Mathf.Atan2(XAxis, YAxis) * Mathf.Rad2Deg) + 360) % 360;
-        if(angleFix >= 0 && angleFix < 90) {
+        /*
+        float angleFix = (Mathf.RoundToInt(Mathf.Atan2(XAxis, YAxis) * Mathf.Rad2Deg) + 360) % 360;
+        if (angleFix >= 0 && angleFix < 90) {
             Direction = Directions.Up;
         }
 
@@ -218,6 +245,30 @@ public class PlayerController : MonoBehaviour
         if(angleFix >= 270 && angleFix < 360) {
             Direction = Directions.Left;
         }
+        */
+
+        float angleFix = (facingDirectionAngle + 360) % 360;
+
+        if (angleFix >= 0 && angleFix < 90)
+        {
+            Direction = Directions.Right;
+        }
+
+        if (angleFix >= 90 && angleFix < 180)
+        {
+            Direction = Directions.Up;
+        }
+
+        if (angleFix >= 180 && angleFix < 270)
+        {
+            Direction = Directions.Left;
+        }
+
+        if (angleFix >= 270 && angleFix < 360)
+        {
+            Direction = Directions.Down;
+        }
+
         playerAnimator.SetInteger("Direction", (int)Direction);
     }
 
@@ -250,7 +301,7 @@ public class PlayerController : MonoBehaviour
         }
         //更新圖片位置
         var newPosition = playerSpriteTransform.localPosition;
-        newPosition.y = playerHeight;
+        newPosition.y = playerHeight * 3 + 0.26f;
         playerSpriteTransform.localPosition = newPosition;
     }
 
@@ -285,7 +336,16 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         alive = false;
-        playerSpriteTransform.localPosition = Vector3.zero;
+        playerSpriteTransform.localPosition = new Vector3(0,0.26f,0);
+        playerRigidBody.velocity = Vector3.zero;
+        score --;
+        killedCount++;
+        if(hittedBy != null) {
+            hittedBy.score++;
+            hittedBy.killCount++;
+            hittedBy = null;
+        }
+
         StartCoroutine(DieCoroutine());
     }
 
@@ -360,6 +420,7 @@ public class PlayerController : MonoBehaviour
                 GameObject shootedWave = GameObject.Instantiate(waveObject);
                 shootedWave.transform.position = transform.position;
                 shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, chargeAmount, this, 1);
+                shootedWave.transform.SetParent(canvasTransform);
                 SFX.PlayOneShot(AttackSFX);
                 energy -= chargeAmount * 0.25f;
             }
@@ -395,7 +456,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void Push(Vector2 direction, float force, float ratio, float reflectMultiplier)
+    public void Push(Vector2 direction, float force, float ratio, float reflectMultiplier,PlayerController shooter)
     {
 
         if (isInvincible) { return; }
@@ -411,6 +472,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!alive) { return; }
         if (playerHeight > evadeHeight) { return; }
+        hittedBy = shooter;
         playerRigidBody.AddForce(direction.normalized * force * ratio * reflectMultiplier);
 
     }
