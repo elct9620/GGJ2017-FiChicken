@@ -17,7 +17,7 @@ public class GameStart : MonoBehaviour {
 	
 	void StartGame () {
 		Random.InitState(System.DateTime.Now.Millisecond);
-		int StageID = Random.Range(1, 5);
+		int StageID = Random.Range(1, 6);
 		SceneManager.LoadScene(string.Format("Stage_{0}", StageID));
 	}
 }
