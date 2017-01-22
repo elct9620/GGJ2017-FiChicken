@@ -16,6 +16,8 @@ public class PowerStation : MonoBehaviour {
 	public SkinType Skin = SkinType.PowerStation;
 	public AudioClip ChargeSound;
 
+    public SpriteRenderer chargeLaserRenderer;
+
 	int ChargeAmount = 1;
 	AudioSource SFX;
 	List<PlayerController> Players = new List<PlayerController>();
@@ -54,9 +56,24 @@ public class PowerStation : MonoBehaviour {
 			// TODO: Perform charge player
 			Controller.RecoverEnergy(ChargeAmount);
 			Power -= ChargeAmount;
-			DestroyOnOutOfPower();
+            StartCoroutine(ShowChargeLaser(Controller.transform.position));
+            DestroyOnOutOfPower();
 		}
 	}
+
+    IEnumerator ShowChargeLaser(Vector3 playerPosition)
+    {
+        chargeLaserRenderer.transform.position = (playerPosition + transform.position) / 2;
+        Vector3 offset = playerPosition - chargeLaserRenderer.transform.position;
+        Quaternion q = Quaternion.Euler(0,0,Mathf.Atan2(offset.y,offset.x));
+        chargeLaserRenderer.transform.rotation = q;
+        chargeLaserRenderer.enabled = true;
+        float distance = offset.magnitude;
+        chargeLaserRenderer.transform.localScale = new Vector3(1, distance * 0.52083f, 1);
+        yield return new WaitForSeconds(0.1f);
+        chargeLaserRenderer.enabled = false;
+
+    }
 
 	void DestroyOnOutOfPower() {
 		if(Power <= 0) {

@@ -372,12 +372,16 @@ public class PlayerController : MonoBehaviour
         float speed = 0.3f;
         for(float timer = 2;timer >= 0; timer -= Time.deltaTime)
         {
+            if (timer > 1) {
+                float scale = 2 - timer;
+                yakitoriTransform.localScale = new Vector3(scale, scale, scale);
+                    }
             if(timer < 1)
             {
                 yakitoriSpriteRenderer.color = new Color(1, 1, 1, timer);
             }
             yakitoriTransform.position = yakitoriTransform.position + Vector3.up * speed * Time.deltaTime;
-            speed -= 0.3f * Time.deltaTime;
+            speed -= 0.6f * Time.deltaTime;
             yield return null;
         }
         emissionModule.enabled = false;
