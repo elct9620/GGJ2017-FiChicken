@@ -6,10 +6,16 @@ using UnityEngine;
 
 public class RankUI : MonoBehaviour {
 
+	public static int PlayerCount = 0;
+	public static int[] Scores = new int[4];
+	public static int[] Kills = new int[4];
+	public static int[] Deads = new int[4];
 	public GameObject PlayerResult;
 
 	void Start () {
-		// TODO: Read scores
+		for(int i = 0; i < PlayerCount; i++) {
+			CreateRank(i + 1, Kills[i], Deads[i], Scores[i]);
+		}
 	}
 
 	void CreateRank(int ID, int Kill, int Dead, int Score) {

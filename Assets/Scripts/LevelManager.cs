@@ -34,6 +34,24 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	void EndGame() {
+
+		int[] Kills = {0, 0, 0, 0};
+		int[] Deads = {0, 0, 0, 0};
+		int[] Scores = {0, 0, 0, 0};
+
+		RankUI.PlayerCount = FieldManager.Players.Count;
+		int index = 0;
+		foreach(PlayerController Controller in FieldManager.Players) {
+			Kills[index] = Controller.killCount;
+			Deads[index] = Controller.killedCount;
+			Scores[index] = Controller.score;
+			index++;
+		}
+
+		RankUI.Kills = Kills;
+		RankUI.Deads = Deads;
+		RankUI.Scores = Scores;
+
 		SceneManager.LoadScene("Result");
 	}
 
@@ -52,7 +70,7 @@ public class LevelManager : MonoBehaviour {
 		Observable.Interval(System.TimeSpan.FromMilliseconds(300))
 				  .Subscribe( _ => {
 						Text.text = string.Format("{0}: {1}", Controller.name, Controller.score);
-				  });
+				  }).AddTo(this);
 	}
 	void UpdateGameTime() {
 		RemainTime--;
