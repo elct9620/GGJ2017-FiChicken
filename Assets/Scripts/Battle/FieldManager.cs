@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class FieldManager : MonoBehaviour {
 
     public Collider2D fieldCollider;
+    public List<PlayerController> Players = new List<PlayerController>();
+
     [SerializeField]
     GameObject canvasGO;
     Canvas canvas;
@@ -24,19 +26,19 @@ public class FieldManager : MonoBehaviour {
         //生成玩家
 
         List<int> avatarIDs = new List<int> { 0, 1, 2, 3 };
-        
-        
 
-        GeneratePlayer("KeyPlayer",Color.white,"Key",new Vector3(-3.5f,2f,0),getRandomElementFromIntList(avatarIDs));
-        GeneratePlayer("Joy1Player", Color.magenta, "Joy1", new Vector3(3.5f, -2f, 0), getRandomElementFromIntList(avatarIDs));
+        GeneratePlayer("P1",Color.white,"Key",new Vector3(-3.5f,2f,0),getRandomElementFromIntList(avatarIDs));
+        GeneratePlayer("P2", Color.magenta, "Joy1", new Vector3(3.5f, -2f, 0), getRandomElementFromIntList(avatarIDs));
         if(playerCount == 3)
         {
-            GeneratePlayer("Joy1Player", Color.cyan, "Joy2", new Vector3(3.5f, 2f, 0), getRandomElementFromIntList(avatarIDs));
+            GeneratePlayer("P3", Color.cyan, "Joy2", new Vector3(3.5f, 2f, 0), getRandomElementFromIntList(avatarIDs));
         }
         if(playerCount >= 4)
         {
-            GeneratePlayer("Joy1Player", Color.yellow, "Joy3", new Vector3(-3.5f, -2f, 0), getRandomElementFromIntList(avatarIDs));
+            GeneratePlayer("{P4}", Color.yellow, "Joy3", new Vector3(-3.5f, -2f, 0), getRandomElementFromIntList(avatarIDs));
         }
+
+        FindObjectOfType<LevelManager>().LoadUI();
 	}
 
     static int getRandomElementFromIntList(List<int> listToGet)
@@ -65,6 +67,8 @@ public class FieldManager : MonoBehaviour {
         player.score = 0;
         player.SetAvatar(avatarID);
         player.canvasTransform = canvas.transform;
+
+        Players.Add(player);
     }
 
 	// Update is called once per frame
