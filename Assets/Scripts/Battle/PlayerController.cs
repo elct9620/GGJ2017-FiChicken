@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer arrowSpriteRenderer;
     [SerializeField]
     SpriteRenderer shadowSpriteRenderer;
+    [SerializeField]
+    GameObject yakitori;
+    SpriteRenderer yakitoriSpriteRenderer;
+    ParticleSystem yakitoriParticle;
     Animator playerAnimator;
     [SerializeField]
     SpriteRenderer shieldSprite;
@@ -128,6 +132,9 @@ public class PlayerController : MonoBehaviour
     {
         playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
         playerAnimator = playerSpriteTransform.GetComponent<Animator>();
+        yakitoriSpriteRenderer = yakitori.GetComponentInChildren<SpriteRenderer>();
+        yakitoriSpriteRenderer.enabled = false;
+        yakitoriParticle = yakitori.GetComponentInChildren<ParticleSystem>();
     }
 
     // Use this for initialization
@@ -187,6 +194,8 @@ public class PlayerController : MonoBehaviour
         }
         UIControl();
 
+        //更新影子
+        shadowSpriteRenderer.enabled = onGround;
         //jumpVelocity
 
 
@@ -305,8 +314,6 @@ public class PlayerController : MonoBehaviour
         var newPosition = playerSpriteTransform.localPosition;
         newPosition.y = playerHeight * 3 + 0.26f;
         playerSpriteTransform.localPosition = newPosition;
-        //更新影子
-        shadowSpriteRenderer.enabled = onGround;
     }
 
     void ShieldControl()
@@ -349,8 +356,32 @@ public class PlayerController : MonoBehaviour
             hittedBy.killCount++;
             hittedBy = null;
         }
-
+        
         StartCoroutine(DieCoroutine());
+    }
+
+    IEnumerator YakitoriCoroutine()
+    {
+        yakitori.SetActive(true);
+        var emissionModule = yakitoriParticle.emission;
+        emissionModule.enabled = true;
+        yakitoriSpriteRenderer.enabled = true;
+        Transform yakitoriTransform = yakitori.transform;
+        yakitoriTransform.localPosition = Vector3.zero;
+        yakitoriSpriteRenderer.color = Color.white;
+        float speed = 0.3f;
+        for(float timer = 2;timer >= 0; timer -= Time.deltaTime)
+        {
+            if(timer < 1)
+            {
+                yakitoriSpriteRenderer.color = new Color(1, 1, 1, timer);
+            }
+            yakitoriTransform.position = yakitoriTransform.position + Vector3.up * speed * Time.deltaTime;
+            speed -= 0.3f * Time.deltaTime;
+            yield return null;
+        }
+        emissionModule.enabled = false;
+        yakitoriSpriteRenderer.enabled = false;
     }
 
     IEnumerator DieCoroutine()
@@ -361,6 +392,7 @@ public class PlayerController : MonoBehaviour
             playerSpriteTransform.localScale = new Vector3(timer, timer, 1);
         }
         yield return null;
+        StartCoroutine(YakitoriCoroutine());
         playerSpriteTransform.localScale = Vector3.zero;
         dieParticle.Emit(15);
         yield return new WaitForSeconds(2);

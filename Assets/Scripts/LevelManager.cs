@@ -41,7 +41,7 @@ public class LevelManager : MonoBehaviour {
 		GameObject UI;
 		foreach(PlayerController Controller in FieldManager.Players) {
 			UI = Instantiate(PlayerUI);
-			UI.transform.parent = PlayerScoreUI.transform;
+			UI.transform.SetParent(PlayerScoreUI.transform);
 
 			SetupScoreUI(UI, Controller);
 		}
