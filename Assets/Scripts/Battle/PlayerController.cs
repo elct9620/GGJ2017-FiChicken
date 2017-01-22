@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Transform playerSpriteTransform;
     SpriteRenderer playerSpriteRenderer;
+    [SerializeField]
     SpriteRenderer arrowSpriteRenderer;
     Animator playerAnimator;
     [SerializeField]
@@ -65,6 +66,8 @@ public class PlayerController : MonoBehaviour
     public Image chargeRing;
     public Image energyRing;
     public FieldManager field;
+
+    public Transform canvasTransform;
 
     bool alive = false;
     bool isInvincible = false;
@@ -119,6 +122,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
+        playerAnimator = playerSpriteTransform.GetComponent<Animator>();
+    }
 
     // Use this for initialization
     void Start()
@@ -126,12 +134,11 @@ public class PlayerController : MonoBehaviour
         SFX = GetComponent<AudioSource>();
         playerRigidBody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
-        playerSpriteRenderer = playerSpriteTransform.GetComponent<SpriteRenderer>();
         arrowSpriteRenderer.color = color;
-        playerAnimator = playerSpriteTransform.GetComponent<Animator>();
         shieldSprite.enabled = false;
         alive = true;
         shielded = false;
+        StartCoroutine(Invincible());
     }
 
     public void SetAvatar(int avatarID)
@@ -413,6 +420,7 @@ public class PlayerController : MonoBehaviour
                 GameObject shootedWave = GameObject.Instantiate(waveObject);
                 shootedWave.transform.position = transform.position;
                 shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, chargeAmount, this, 1);
+                shootedWave.transform.SetParent(canvasTransform);
                 SFX.PlayOneShot(AttackSFX);
                 energy -= chargeAmount * 0.25f;
             }

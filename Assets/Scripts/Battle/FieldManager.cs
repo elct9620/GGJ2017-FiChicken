@@ -64,6 +64,7 @@ public class FieldManager : MonoBehaviour {
         player.chargeRing.transform.SetParent(canvas.transform);
         player.score = 0;
         player.SetAvatar(avatarID);
+        player.canvasTransform = canvas.transform;
     }
 
 	// Update is called once per frame

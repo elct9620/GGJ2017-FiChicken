@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using System;
+using UnityEngine.UI;
 
 public class WaveController : MonoBehaviour {
 
@@ -12,8 +13,16 @@ public class WaveController : MonoBehaviour {
     float lifetime = 5;
     [SerializeField]
     float pushForce = 100;
+    //[SerializeField]
+    //SpriteRenderer waveSpriteRenderer;
     [SerializeField]
-    SpriteRenderer waveSpriteRenderer;
+    Image waveImage;
+    [SerializeField]
+    BoxCollider2D boxCollider;
+    [SerializeField]
+    RectTransform imageRectTransform;
+
+
 
     float reflectMultiplier = 1;
 
@@ -63,22 +72,40 @@ public class WaveController : MonoBehaviour {
 
         reflectMultiplier = _reflectMultiplier;
         moveVector = normalizedDirection * speed * reflectMultiplier;
-        transform.localScale = new Vector3(1,_ratio,1);
+        //transform.localScale = new Vector3(1,_ratio,1);
+        Vector2 newSizeDelta = new Vector2(64, _ratio * 12);
+        imageRectTransform.sizeDelta = newSizeDelta;
         ratio = _ratio;
         lifeTimer.Throttle(TimeSpan.FromSeconds(5)).Subscribe(_ => Destroy(gameObject));
         ignoreList = new List<PlayerController> { _shooter};
         //根據玩家顏色變色
-        waveSpriteRenderer.color = _shooter.color;
+        waveImage.color = _shooter.color;
 
         shooter = _shooter;
     }
 
+    void UpdateColliderSize()
+    {
+        float ySize = imageRectTransform.sizeDelta.y;
+        float colliderSize = ySize >= 132 ? ySize - 40 : ySize * 0.6969697f;
+        var newSize = boxCollider.size;
+        newSize.y = ySize;
+        boxCollider.size = newSize;
+    }
+
+
     void DoMove()
     {
         transform.position = transform.position + moveVector * Time.deltaTime;
-        var newScale = transform.localScale;
-        newScale.y = newScale.y + speed * ratio * reflectMultiplier * Time.deltaTime;
-        transform.localScale = newScale;
+        Vector2 newSizeDelta = imageRectTransform.sizeDelta;
+        float newSizeY = newSizeDelta.y + speed * ratio * reflectMultiplier * Time.deltaTime * 16;
+        newSizeDelta.y = newSizeY;
+        imageRectTransform.sizeDelta = newSizeDelta;
+        //var newScale = transform.localScale;
+        //newScale.y = newScale.y + speed * ratio * reflectMultiplier * Time.deltaTime;
+        //transform.localScale = newScale;
+        
+        UpdateColliderSize();
     }
 
 	// Update is called once per frame
