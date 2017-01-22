@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer playerSpriteRenderer;
     [SerializeField]
     SpriteRenderer arrowSpriteRenderer;
+    [SerializeField]
+    SpriteRenderer shadowSpriteRenderer;
     Animator playerAnimator;
     [SerializeField]
     SpriteRenderer shieldSprite;
@@ -100,7 +102,7 @@ public class PlayerController : MonoBehaviour
     AudioSource SFX;
     void FixedUpdate()
     {
-        onGround = OnGround();
+        onGround = CheckOnGround();
         triggerStayExcuted = false;
     }
 
@@ -193,7 +195,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    bool OnGround()
+    bool CheckOnGround()
     {
         /*
         bool ret = true;
@@ -303,6 +305,8 @@ public class PlayerController : MonoBehaviour
         var newPosition = playerSpriteTransform.localPosition;
         newPosition.y = playerHeight * 3 + 0.26f;
         playerSpriteTransform.localPosition = newPosition;
+        //更新影子
+        shadowSpriteRenderer.enabled = onGround;
     }
 
     void ShieldControl()
@@ -464,6 +468,7 @@ public class PlayerController : MonoBehaviour
         {
             GameObject shootedWave = GameObject.Instantiate(waveObject);
             shootedWave.transform.position = transform.position;
+            shootedWave.transform.SetParent(canvasTransform);
             float reflectAngle = Mathf.Atan2(direction.y, direction.x) + 180;
             shootedWave.GetComponent<WaveController>().Shoot(facingDirectionAngle, ratio, this, reflectMultiplier + 0.2f);
             RecoverEnergy(shieldCostEnergy);
