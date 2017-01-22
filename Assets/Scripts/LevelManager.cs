@@ -34,7 +34,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	void EndGame() {
-		SceneManager.LoadScene("Main");
+		SceneManager.LoadScene("Result");
 	}
 
 	void SetupPlayerUI() {
